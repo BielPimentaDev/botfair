@@ -24,6 +24,10 @@ def start_bot(body, bot_id):
 
 bot_id = str(uuid.uuid4())
 
+@app.route('/')
+def hello_world():
+    return "Hello world"
+
 @app.route('/create_bot', methods=['POST'] )
 def create_bot():
     global bot_id

@@ -1,14 +1,20 @@
 
-import threading
+
 import psycopg2
 from datetime import datetime
+
 import uuid
 
-hostname = 'localhost'
-database = 'firstDatabase'
+# hostname = 'localhost'
+# database = 'firstDatabase'
+# username = 'postgres'
+# pwd = 'root'
+# port_id = 5432
+hostname = 'containers-us-west-121.railway.app'
+database = 'railway'
 username = 'postgres'
-pwd = 'root'
-port_id = 5432
+pwd = 'syRzvlDBmsXujDN4aKrJ'
+port_id = 7801
 
 
 
