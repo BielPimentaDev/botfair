@@ -60,6 +60,7 @@ if __name__ == "__main__":
     stop_param_win - valor de parada em ganhos
     stop_time - tempo de espera para reiniciar em minutos
     """
+    print('started')
     app.run()
     ""
 # body = {
