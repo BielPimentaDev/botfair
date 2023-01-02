@@ -1,5 +1,5 @@
 from selenium import webdriver
-
+import threading
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -22,13 +22,14 @@ headless = getenv("HEADLESS")
 
 
 def bot(options):
+
     chrome_options = Options()
     chrome_options.add_argument("--no-sandbox")
 
     if headless == "true":
         chrome_options.add_argument("--headless")
 
-#    driver = webdriver.Chrome("./chromedriver", chrome_options=chrome_options)
+
     driver = webdriver.Chrome(
         ChromeDriverManager().install(),
         chrome_options=chrome_options,
@@ -37,6 +38,9 @@ def bot(options):
     login = Login(driver)
     login.setup_login(betfair_email, betfair_password)
 
+    print(f'Threading bot: {threading.active_count()}')
     bet = Bet(driver, options)
-
+    
     bet.start()
+    
+

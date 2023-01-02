@@ -1,6 +1,7 @@
 import time
 from selenium.webdriver.common.by import By
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 import time
 from lib.entities.game import Game
@@ -55,32 +56,32 @@ class Martingale:
         return Game([team_1, team_2], [score_1, score_2], hour, info)
 
     def make_bet(self, xpath):
-        time.sleep(1)
+        time.sleep(5)
         print(f"Fazendo aposta com {self.bet}")
-        button = self.driver.find_element(
-            By.XPATH,
-            xpath,
-        )
-        time.sleep(1)
-        # print(f"xpath button = {xpath}")
-        button.click()
-
-        time.sleep(1)
+       
+        button1 = WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, xpath)))
+        button1.click()
+        time.sleep(2)        
+          
+        print('first click')
+              
+     
         
+      
         self.driver.find_element(
             By.XPATH,
             "/html/body/div[1]/div[2]/div[2]/div/div[2]/div[3]/div/div/div/div[1]/form/div/div[2]/div/div[3]/div[2]/div/ul/li/div[2]/div[2]/div/div[1]/div/input[1]",
         ).send_keys(round(self.bet, 2))
-
-        time.sleep(1)
-
-        self.driver.find_element(
-            By.XPATH,
-            "/html/body/div[1]/div[2]/div[2]/div/div[2]/div[3]/div/div/div/div[1]/form/div/div[3]/div[3]/div[2]/button",
-        ).click()
+        
+        print('send keys')
+        
         time.sleep(2)
-
-        self.driver.find_element(
-            By.XPATH,
-            "/html/body/div[1]/div[2]/div[2]/div/div[2]/div[3]/div/div/div/div[3]/div/div[3]/div[2]/button",
-        ).click()
+        button2 = WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH,"/html/body/div[1]/div[2]/div[2]/div/div[2]/div[3]/div/div/div/div[1]/form/div/div[3]/div[3]/div[2]/button")))
+        button2.click()
+        time.sleep(2)
+        print('second click')
+        
+        button3 = WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[2]/div[2]/div/div[2]/div[3]/div/div/div/div[3]/div/div[3]/div[2]/button")))
+        button3.click()
+        
+        print('third click')

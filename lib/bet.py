@@ -1,15 +1,19 @@
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-
+from bdd import write_in_bdd
 from datetime import date, datetime, timedelta
-
 from lib.entities.game import Game
 from lib.martingale import Martingale
+import threading
 from lib.utils import (
     get_hour_from_string,
 )
 
+from bdd import stoped_bots_list
+
 import time
+
 
 
 class Bet:
@@ -18,11 +22,13 @@ class Bet:
         self.above_enabled = options.get("above")
         self.tie_enabled = options.get("tie")
         self.visitor_enabled = options.get("visitor")
+        self.bot_id = options.get("bot_id")
         self.driver = driver
         self.current_points_to_stop = 0
         self.stop_param_win = options.get("stop_param_win")
         self.stop_param_lose = options.get("stop_param_lose")
         self.stop_time = options.get("stop_time")
+        self.stop_operation = False
         self.tie = Martingale(
             driver,
             self.tie_enabled.get("value"),
@@ -42,6 +48,9 @@ class Bet:
             self.visitor_enabled.get("martingale"),
         )
         self.options = options
+        
+    def stop(self):
+        self.stop_operation = True
 
     def get_last_game_result(self):
         last_game = self.driver.find_element(
@@ -82,7 +91,7 @@ class Bet:
         )
 
         time_to_wait = (bet_hour - now).seconds
-        if time_to_wait < 300:
+        if time_to_wait < 300: 
             print(
                 f"Aguardando {time_to_wait} segundos até {hour2bet} para realizar a primeira aposta"
             )
@@ -90,8 +99,13 @@ class Bet:
         else:
             time.sleep(5)
             self.start()
-
+        
         while True:
+            print(f'BOT {self.bot_id}')
+            list_to_check = stoped_bots_list()
+            if self.bot_id in list_to_check:
+                print('Parando por ja ter outro bot sendo iniciado')
+                break 
             if ( self.stop_param_lose >= self.current_points_to_stop or self.current_points_to_stop >= self.stop_param_win ):
                 print(
                     f"Criterio de parada alcancado: {self.current_points_to_stop}")
@@ -121,52 +135,59 @@ class Bet:
             if self.tie_enabled["enabled"]:
                 self.is_tie(score)
             if self.visitor_enabled["enabled"]:
-                self.is_sum_of_goals_one(score)
+                self.is_sum_of_goals_bellow_2_5(score)
+            if self.stop_operation:
+                self.stop_operation = False
+                break
 
-    def winning_bet(self, value_to_increase: Martingale, increase_xpath):
+    def winning_bet(self, value_to_increase: Martingale, increase_xpath, type_of_operation):
         value = float(self.driver.find_element(By.XPATH, increase_xpath).text)
-        self.current_points_to_stop += (
+        gain = (
             value_to_increase.bet * value
         ) - value_to_increase.bet
+        
+        self.current_points_to_stop += gain
+        message = f"Green: +{gain}"
+        write_in_bdd(self.bot_id,gain, f'green {type_of_operation}' )
+        
+        
 
-    def losing_bet(self, value_to_decrease: Martingale):
-        self.current_points_to_stop -= value_to_decrease.bet
-
+    def losing_bet(self, value_to_decrease: Martingale, type_of_operation):
+        loss = value_to_decrease.bet
+        self.current_points_to_stop -= loss
+        
+        write_in_bdd(self.bot_id, loss, f'red {type_of_operation}')
+       
+#SOMA DE 2.5 GOLS
     def is_sum_of_goals_is_above_2_5(self, score):
         xpath = "/html/body/div[2]/div/div[2]/div[2]/div/div/div/div/div/div/div[2]/div/div[1]/div[3]/div[2]/div/div/div[2]/div/div[2]/a"
         if score[0] + score[1] >= 2.5:
-            self.winning_bet(self.above, xpath)
+            self.winning_bet(self.above, xpath,'goals > 2.5')
             self.above.reset()
         else:
-            self.losing_bet(self.above)
-
+            self.losing_bet(self.above,'goals > 2.5')
+            
         self.above.play(xpath)
-
+#TOTAL DE GOLS 2
     def is_tie(self, score):
         xpath = "/html/body/div[2]/div/div[2]/div[2]/div/div/div/div/div/div/div[2]/div/div[1]/div[6]/div[2]/div/div[3]/div/div[2]/a"
         if score[0] + score[1] == 2:
-            self.winning_bet(self.tie, xpath)
+            self.winning_bet(self.tie, xpath, 'goals = 2')
             self.tie.reset()
         else:
-            self.losing_bet(self.tie)
+            self.losing_bet(self.tie, 'goals = 2')
 
         self.tie.play(xpath)
 
-    def is_sum_of_goals_one(self, score):
-        xpath = "/html/body/div[2]/div/div[2]/div[2]/div/div/div/div/div/div/div[2]/div/div[2]/div[6]/div[2]/div/div[2]/div/div[2]/a"
-        if score[0] + score[1] == 1:
-            self.winning_bet(self.visitor, xpath)
+#MENOS DE 2.5 GOLS
+    def is_sum_of_goals_bellow_2_5(self, score):
+        xpath = "/html/body/div[2]/div/div[2]/div[2]/div/div/div/div/div/div/div[2]/div/div[1]/div[3]/div[2]/div/div/div[1]/div/div[2]/a"
+        if score[0] + score[1] <= 2.5:
+            self.winning_bet(self.visitor, xpath, 'goals < 2.5')
             self.visitor.reset()
         else:
-            self.losing_bet(self.visitor)
+            self.losing_bet(self.visitor, 'goals < 2.5')
 
         self.visitor.play(xpath)
 
-    def write_on_bdd(self, message):
-        time_of_message = datetime(
-            datetime.now().year,
-            datetime.now().month,
-            datetime.now().day,
-            int(hour),
-            int(minutes),
-        print(f"{time_of_message} : {message}")
+
