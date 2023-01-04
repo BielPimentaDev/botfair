@@ -52,10 +52,11 @@ def show_table():
     bots = curr.fetchall()
     bot_list = []
     for bot in bots:
+       
         bot_list.append({
-            'bot_id': bot[1],
-            'time': bot[2],
-            'message': bot[3]
+            'bot_id': bot[0],
+            'time': bot[1],
+            'message': bot[2]
         })
     conn.close()
     curr.close()

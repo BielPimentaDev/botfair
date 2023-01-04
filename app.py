@@ -43,6 +43,7 @@ def create_bot():
 @app.route('/get_bots')
 def bots_list():
     table = show_table()
+    
     return table
 
 @app.route('/show_bot/<id>')
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     stop_time - tempo de espera para reiniciar em minutos
     """
     print('started')
-    app.run(port=4000)
+    app.run(port=5000)
     ""
 # body = {
 #             "above": {"coef": 1.55, "value": 0.77, "martingale": 3, "enabled": True},
