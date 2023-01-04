@@ -65,7 +65,7 @@ if __name__ == "__main__":
     stop_time - tempo de espera para reiniciar em minutos
     """
     print('started')
-    app.run()
+    app.run(port=4000)
     ""
 # body = {
 #             "above": {"coef": 1.55, "value": 0.77, "martingale": 3, "enabled": True},
