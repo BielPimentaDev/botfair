@@ -12,7 +12,7 @@ stop_event = threading.Event()
 
 
 
-# @retry(wait=wait_fixed(2), stop=stop_after_attempt(4))
+@retry(wait=wait_fixed(2), stop=stop_after_attempt(4))
 def start_bot(body, bot_id):
     print('Iniciando bot...')
     body = {
@@ -42,8 +42,7 @@ def create_bot():
  
 @app.route('/get_bots')
 def bots_list():
-    table = show_table()
-    
+    table = show_table()    
     return table
 
 @app.route('/show_bot/<id>')
