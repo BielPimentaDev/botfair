@@ -12,7 +12,7 @@ stop_event = threading.Event()
 
 
 
-@retry(wait=wait_fixed(2), stop=stop_after_attempt(4))
+# @retry(wait=wait_fixed(2), stop=stop_after_attempt(4))
 def start_bot(body, bot_id):
     print('Iniciando bot...')
     body = {
