@@ -117,7 +117,7 @@ def stoped_bots_list():
     bots = curr.fetchall()
     bot_list = []
     for bot in bots:
-        bot_list.append(bot[1])
+        bot_list.append(bot[0])
     conn.close()
     curr.close()
     return bot_list

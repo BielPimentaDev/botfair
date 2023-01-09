@@ -14,7 +14,7 @@ class Login:
 
         # accept cookies
         button_accept_cookies_id = "onetrust-accept-btn-handler"
-        WebDriverWait(self.driver, timeout=5).until(
+        WebDriverWait(self.driver, timeout=15).until(
             lambda d: d.find_element(By.ID, button_accept_cookies_id)
         )
 
