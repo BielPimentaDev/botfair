@@ -13,13 +13,17 @@ class Login:
         self.driver.get("https://www.betfair.com/br")
 
         # accept cookies
-        print('try login')
+        time.sleep(5)
+        test = self.driver.find_element(By.XPATH, '//*')
+        print('html content')
+        print(test.text)
         
         button_accept_cookies_id = "onetrust-accept-btn-handler"
 
         accept_cookies_button = WebDriverWait(self.driver, timeout=15).until(
             lambda d: d.find_element(By.ID, button_accept_cookies_id)
         )
+        
         print('keep')
 
         accept_cookies_button.click()
