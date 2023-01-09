@@ -19,10 +19,13 @@ class Login:
         WebDriverWait(self.driver, timeout=15).until(
             lambda d: d.find_element(By.ID, button_accept_cookies_id)
         )
+        print('1')
 
         accept_cookies_button = self.driver.find_element(
             By.ID, button_accept_cookies_id
         )
+        
+        print('2')
         accept_cookies_button.click()
 
         # setup login
