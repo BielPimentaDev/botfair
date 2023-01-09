@@ -16,18 +16,23 @@ class Login:
         print('try login')
         
         button_accept_cookies_id = "onetrust-accept-btn-handler"
-        time.sleep(5)
-        WebDriverWait(self.driver, timeout=15).until(
+
+        accept_cookies_button = WebDriverWait(self.driver, timeout=15).until(
             lambda d: d.find_element(By.ID, button_accept_cookies_id)
         )
-        print('1')
+        print('keep')
 
-        accept_cookies_button = self.driver.find_element(
-            By.ID, button_accept_cookies_id
-        )
-
-        print('2')
         accept_cookies_button.click()
+       
+        # WebDriverWait(self.driver, timeout=15).until(
+        #     lambda d: d.find_element(By.ID, button_accept_cookies_id)
+        # )
+        # accept_cookies_button = self.driver.find_element(
+        #     By.ID, button_accept_cookies_id
+        # )
+
+      
+        # accept_cookies_button.click()
 
         # setup login
         email_input = self.driver.find_element(By.ID, "ssc-liu")
