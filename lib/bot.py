@@ -20,6 +20,7 @@ betfair_email = getenv("BETFAIR_EMAIL")
 betfair_password = getenv("BETFAIR_PASSWORD")
 headless = getenv("HEADLESS")
 
+user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
 
 def bot(options):
 
@@ -28,6 +29,9 @@ def bot(options):
 
     if headless == "true":
         chrome_options.add_argument("--headless")
+    
+    chrome_options.add_argument(user_agent)
+
 
 
     driver = webdriver.Chrome(
