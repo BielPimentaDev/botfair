@@ -6,6 +6,7 @@ import uuid
 import time
 from tenacity import retry, stop_after_attempt, wait_fixed
 from bdd import show_table,show_bot_by_id, create_stoped_bot, stoped_bots_list
+
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -24,7 +25,8 @@ def start_bot(body, bot_id):
             "above": body['above'], "tie": body['tie'] , "stop_param_lose": body['stop_param_lose'], "stop_param_win": body['stop_param_win'], "stop_time": body['stop_time'], "visitor": body['visitor'], "bot_id": bot_id
         }
     bot(body)
-    
+
+
 
 
 bot_id = str(uuid.uuid4())
@@ -32,6 +34,7 @@ bot_id = str(uuid.uuid4())
 @app.route('/')
 def hello_world():
     return "Hello world"
+
 
 @app.route('/create_bot', methods=['POST'] )
 def create_bot():
@@ -56,18 +59,22 @@ def bot_list(id):
     return table
 
 
+user_agent = "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36"
+
 @app.route('/test')
 def test_link():
     driver = webdriver.Chrome(
         ChromeDriverManager().install()     
     )
+    op = webdriver.ChromeOptions()
+
+    op.add_argument(user_agent)    
 
     driver.get("https://www.betfair.com/br")
 
     print('pegando xpath')
 
     test = driver.find_element(By.XPATH, '//*')
-
 
     print(test.text)
     driver.quit()
