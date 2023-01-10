@@ -9,7 +9,7 @@ driver = webdriver.Chrome(
         ChromeDriverManager().install()     
     )
 
-driver.get("https://www.google.com/")
+driver.get("https://www.betfair.com/br")
 
 print('pegando xpath')
 

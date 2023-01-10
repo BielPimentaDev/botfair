@@ -6,6 +6,11 @@ import uuid
 import time
 from tenacity import retry, stop_after_attempt, wait_fixed
 from bdd import show_table,show_bot_by_id, create_stoped_bot, stoped_bots_list
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+
+from selenium.webdriver.common.by import By
 
 app = Flask(__name__)
 stop_event = threading.Event()
@@ -49,6 +54,25 @@ def bots_list():
 def bot_list(id):
     table = show_bot_by_id(str(id))
     return table
+
+
+@app.route('/test')
+def test_link():
+    driver = webdriver.Chrome(
+        ChromeDriverManager().install()     
+    )
+
+    driver.get("https://www.betfair.com/br")
+
+    print('pegando xpath')
+
+    test = driver.find_element(By.XPATH, '//*')
+
+
+    print(test.text)
+    driver.quit()
+
+    return 'ok'
 
 
 if __name__ == "__main__":
